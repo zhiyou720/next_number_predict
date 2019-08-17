@@ -49,4 +49,7 @@ def save_txt_file(data, path, end='\n'):
 
     with open(path, 'a', encoding='utf-8') as f:
         for item in data:
-            f.write(item + end)
+            if not item:
+                f.write(end)
+            else:
+                f.write(item + end)

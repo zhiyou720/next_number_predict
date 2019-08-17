@@ -84,14 +84,8 @@ batch_size = 16
 embedding_dims = 200
 epochs = 100
 
-# print('Pad sequences (samples x time)...')
-# x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
-# x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
-# print('x_train shape:', x_train.shape)
-# print('x_test shape:', x_test.shape)
 if __name__ == '__main__':
-
-    maxlen = 200
+    maxlen = 288
 
     print('Loading data...')
     x, y, vocab, vocab_index = load_data(maxlen)
@@ -102,23 +96,32 @@ if __name__ == '__main__':
 
     print(len(x_train), 'train sequences')
     print(len(x_test), 'test sequences')
+
+    # print('Pad sequences (samples x time)...')
     #
-    # print('Build model...')
-    # model = TextAttBiRNN(maxlen, len(vocab), embedding_dims).get_model()
-    # model.compile(optimizer='adam', loss=categorical_crossentropy, metrics=['accuracy'])
-    # model.summary()
-    #
-    # print('Train...')
-    # early_stopping = EarlyStopping(monitor='val_acc', patience=10, mode='max')
-    # model.fit(x, y,
-    #           batch_size=batch_size,
-    #           epochs=epochs,
-    #           # verbose=0,
-    #           callbacks=[early_stopping],
-    #           # shuffle=True,
-    #           validation_data=(x_test, y_test))
-    #
-    # model.save('res.model')
+    # x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=None, dtype='int32', padding='pre',
+    #                                                      truncating='pre', value=0.0)
+    # x_test = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=None, dtype='int32', padding='pre',
+    #                                                     truncating='pre', value=0.0)
+    # print('x_train shape:', x_train.shape)
+    # print('x_test shape:', x_test.shape)
+
+    print('Build model...')
+    model = TextAttBiRNN(maxlen, len(vocab), embedding_dims).get_model()
+    model.compile(optimizer='adam', loss=categorical_crossentropy, metrics=['accuracy'])
+    model.summary()
+
+    print('Train...')
+    early_stopping = EarlyStopping(monitor='val_acc', patience=3, mode='max')
+    model.fit(x, y,
+              batch_size=batch_size,
+              epochs=epochs,
+              # verbose=0,
+              callbacks=[early_stopping],
+              # shuffle=True,
+              validation_data=(x_test, y_test))
+
+    model.save('res.model')
 
     s = predict()
     #
