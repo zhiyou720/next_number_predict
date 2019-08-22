@@ -51,7 +51,7 @@ def build_seq_data_set(seq_len):
 
 
 def build_seq_data_set2(seq_len=10):
-    raw_data = load_txt_data('./data/new_train_a.csv')
+    raw_data = load_txt_data('./data/new_train_diff.csv')
     # print(len(raw_data))
     ptr = 0
     x_train = []
@@ -59,7 +59,8 @@ def build_seq_data_set2(seq_len=10):
     while ptr + seq_len < len(raw_data):
         delta = 0
         tmp_x = []
-        tmp_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # tmp_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        tmp_y = [0, 0]
         while len(tmp_x) < seq_len:
             tmp_x.append(raw_data[ptr + delta].split(',')[0])
             delta += 1
@@ -70,11 +71,11 @@ def build_seq_data_set2(seq_len=10):
         # print('label:', raw_data[ptr+seq_len])
         x_train.append(tmp_x)
 
-        # if 3 >= int(raw_data[ptr + seq_len]) > 0:
-        #     tmp_y[0] = 1
-        # else:
-        #     tmp_y[1] = 1
-        tmp_y[int(raw_data[ptr + seq_len].split(',')[1])] = 1  # 10 classification
+        if 3 >= int(raw_data[ptr + seq_len].split(',')[1]) > 0:
+            tmp_y[0] = 1
+        else:
+            tmp_y[1] = 1
+        # tmp_y[int(raw_data[ptr + seq_len].split(',')[1])] = 1  # 10 classification
         # print(tmp_y)
         y_train.append(tmp_y)
         # ptr += (delta+1)

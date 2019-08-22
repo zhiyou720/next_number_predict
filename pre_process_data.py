@@ -119,13 +119,13 @@ def save_data_to_csv(label, day, week, time):
         # raw = '{},{},{},{}'.format(label[i], day[i], week[i], time[i])
         raw = '{},{}'.format(time[i], label[i])
         data.append(raw)
-    save_txt_file(data, './data/new_train_a.csv')
+    save_txt_file(data, './data/new_train_diff.csv')
 
 
 if __name__ == '__main__':
-    cycle = 8064
+    cycle = 4032
     _time, _a, _b, _diff, _day, _week = build_data_set(cycle)
-    # save_data_to_csv(_a, _day, _week, _time)
+    save_data_to_csv(_diff, _day, _week, _time)
     _data = _diff
     build_attention_map(_time, _data, cycle)
     plot_data(_time, _data, cycle)
