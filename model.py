@@ -110,10 +110,10 @@ class Attention(Layer):
 
 class TextAttBiRNN(object):
     def __init__(self, maxlen, max_features, embedding_dims,
-                 class_num=2,
+                 class_num=10,
                  last_activation='softmax'):
         self.maxlen = maxlen
-        self.hidden_units = maxlen
+        self.hidden_units = 10
         self.max_features = max_features
         self.embedding_dims = embedding_dims
         self.class_num = class_num

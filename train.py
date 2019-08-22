@@ -81,18 +81,18 @@ def predict():
 
 
 batch_size = 16
-embedding_dims = 200
+embedding_dims = 50
 epochs = 100
 
 if __name__ == '__main__':
-    maxlen = 288
+    maxlen = 10
 
     print('Loading data...')
     x, y, vocab, vocab_index = load_data(maxlen)
     with open('./config.pkl', 'wb') as out_p:
         pickle.dump(vocab, out_p)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.01)
 
     print(len(x_train), 'train sequences')
     print(len(x_test), 'test sequences')
