@@ -82,7 +82,7 @@ def predict():
 
 batch_size = 16
 embedding_dims = 50
-epochs = 100
+epochs = 1000
 
 if __name__ == '__main__':
     maxlen = 10
@@ -117,7 +117,7 @@ if __name__ == '__main__':
               batch_size=batch_size,
               epochs=epochs,
               # verbose=0,
-              callbacks=[early_stopping],
+              # callbacks=[early_stopping],
               # shuffle=True,
               validation_data=(x_test, y_test))
 
