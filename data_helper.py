@@ -71,7 +71,7 @@ def build_seq_data_set2(seq_len=10):
         # print('label:', raw_data[ptr+seq_len])
         x_train.append(tmp_x)
 
-        if 3 >= int(raw_data[ptr + seq_len].split(',')[1]) > 0:
+        if int(raw_data[ptr + seq_len].split(',')[1]) in [1, 2, 3, 4]:
             tmp_y[0] = 1
         else:
             tmp_y[1] = 1
