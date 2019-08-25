@@ -54,6 +54,8 @@ def predict(x_open_test, y_open_test):
             if y_true[i] in res[i][:rng + 1]:
                 score += 1
                 # print(y_true[i], res[i])
+            if rng == 4:
+                print('真实值: {}, 预测值: {}'.format(y_true[i], res[i][:5]))
         print('预测概率前 {} 个数: {}'.format(rng + 1, score / total))
     res_one = []
     for item in result:
@@ -73,10 +75,10 @@ def predict(x_open_test, y_open_test):
 
 
 if __name__ == '__main__':
-    train = True
+    train = False
     batch_size = 32
     embedding_dims = 200
-    epochs = 100
+    epochs = 12
 
     max_len = 10
     class_num = 10
