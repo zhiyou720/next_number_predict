@@ -73,14 +73,14 @@ def predict(x_open_test, y_open_test):
 
 
 if __name__ == '__main__':
-    train = False
+    train = True
     batch_size = 32
     embedding_dims = 200
-    epochs = 30
+    epochs = 100
 
     max_len = 10
     class_num = 10
-    train_data_path = './data/new_train_a+week.csv'
+    train_data_path = './data/new_train_diff+week.csv'
     print('Loading data...')
 
     if train:

@@ -125,7 +125,7 @@ class TextAttBiRNN(object):
 
         bn = keras.layers.BatchNormalization()(embedding)
 
-        drop = keras.layers.Dropout(0.)(bn)
+        drop = keras.layers.Dropout(0.5)(bn)
 
         lstm1 = CuDNNLSTM(self.hidden_units, return_sequences=True)  # LSTM or GRU
 
