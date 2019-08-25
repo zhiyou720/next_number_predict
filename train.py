@@ -18,7 +18,7 @@ from tools.dataio import save_txt_file
 
 
 def predict(x_open_test, y_open_test):
-    _model = keras.models.load_model('res.model')
+    _model = keras.models.load_model('./model/res.model')
 
     score = _model.evaluate(x_open_test, y_open_test, batch_size=16)
     print(score)
@@ -58,33 +58,32 @@ def predict(x_open_test, y_open_test):
                 score += 1
                 # print(y_true[i], res[i])
         print('预测概率前 {} 个数: {}'.format(rng + 1, score / total))
+    res_one = []
+    for item in result:
+        item = list(item)
+        res_one.append(item.index(max(item)))
 
-    # rrd_score = 0
-    # for i in range(len(y_true) - 10):
-    #     tmp = []
-    #     for rrd in range(10):
-    #         try:
-    #             y_predict = res[i + rrd][0]
-    #             print(y_predict)
-    #             tmp.append(res[i + rrd][0])
-    #         except IndexError:
-    #             pass
-    #     if y_true[i] in tmp:
-    #         rrd_score += 1
-    # print('如果此次预测的数字出现在了未来10个就算正确的概率: {}'.format(rrd_score / (total - 10)))
+    for i in range(5, 21):
+        y_true_x = y_true[:-i]
+        _total = len(y_true_x)
+        rrd_score = 0
+        for j in range(len(y_true_x)):
+            if y_true[j] in res_one[j:j + i]:
+                rrd_score += 1
+        print('如果此次预测的数字出现在了未来{}个就算正确的概率: {}'.format(i, rrd_score / _total))
 
     return score / total
 
 
-batch_size = 32
-embedding_dims = 200
-epochs = 10
-
 if __name__ == '__main__':
-    train = True
+    train = False
+    batch_size = 32
+    embedding_dims = 200
+    epochs = 30
+
     max_len = 10
     class_num = 10
-    train_data_path = './data/new_train_diff+week.csv'
+    train_data_path = './data/new_train_a+week.csv'
     print('Loading data...')
 
     if train:
@@ -116,6 +115,6 @@ if __name__ == '__main__':
                   shuffle=False,
                   validation_data=(x_test, y_test))
 
-        model.save('res.model')
+        model.save('./model/res.model')
     else:
         s = predict(ox, oy)
