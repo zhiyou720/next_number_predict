@@ -8,13 +8,10 @@
 @Desc     : 
 """
 import keras
-from keras.callbacks import EarlyStopping
-from sklearn.model_selection import train_test_split
-from keras.losses import categorical_crossentropy
-from data_helper import DataLoader
 from model import TextAttBiRNN
-import pickle
-from tools.dataio import save_txt_file
+from data_helper import DataLoader
+from keras.losses import categorical_crossentropy
+from sklearn.model_selection import train_test_split
 
 
 def predict(x_open_test, y_open_test):
