@@ -8,7 +8,7 @@
 @desc:
 """
 import os
-import labeling_model
+from tools import labeling_model
 import tensorflow as tf
 from numpy.random import seed
 from tensorflow import set_random_seed

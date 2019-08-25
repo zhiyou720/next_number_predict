@@ -11,38 +11,25 @@ import keras
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from keras.losses import categorical_crossentropy
-from data_helper import load_data
+from data_helper import DataLoader
 from model import TextAttBiRNN
 import pickle
 from tools.dataio import save_txt_file
 
 
 def predict(x_open_test, y_open_test):
-    model = keras.models.load_model('res.model')
-    # model.load_weights('./config.pkl')
+    _model = keras.models.load_model('res.model')
 
-    score = model.evaluate(x_open_test, y_open_test, batch_size=16)
+    score = _model.evaluate(x_open_test, y_open_test, batch_size=16)
     print(score)
     print('Test...')
-    # x_test = x_test[:10]
-    # y_test = y_test[:10]
-    result = model.predict(x_open_test)
-    # print(result)
 
-    # for item in x_test:
-    #     result = model.predict([item])
-    #     print(result)
-    #     print()
+    result = _model.predict(x_open_test)
 
-    # print(x_test)
-    def bubbleSort(arr):
+    def bubble_sort(arr):
         n = len(arr)
-
-        # 遍历所有数组元素
-        for i in range(n):
-
-            # Last i elements are already in place
-            for j in range(0, n - i - 1):
+        for _i in range(n):
+            for j in range(0, n - _i - 1):
 
                 if arr[j] < arr[j + 1]:
                     arr[j], arr[j + 1] = arr[j + 1], arr[j]
@@ -51,44 +38,60 @@ def predict(x_open_test, y_open_test):
     for item in result:
         item = list(item)
         tmp = item[:]
-        bubbleSort(tmp)
+        bubble_sort(tmp)
         __ = []
-        __.append(item.index(tmp[0]))
-        # __.append(item.index(tmp[1]))
-        # __.append(item.index(tmp[2]))
+        for i in range(len(tmp) - 5):
+            __.append(item.index(tmp[i]))
         res.append(__)
 
-    print(res)
-    print(x_open_test)
     y_true = []
 
-    for y in y_open_test:
-        _ = list(y).index(1)
+    for _y in y_open_test:
+        _ = list(_y).index(1)
         y_true.append(_)
-        print(_)
 
-    score = 0
     total = len(x_open_test)
+    for rng in range(5):
+        score = 0
+        for i in range(len(y_true)):
+            if y_true[i] in res[i][:rng + 1]:
+                score += 1
+                # print(y_true[i], res[i])
+        print('预测概率前 {} 个数: {}'.format(rng + 1, score / total))
 
-    for i in range(len(y_true)):
-        # print(res[i], y_true[i])
-
-        if y_true[i] in res[i]:
-            score += 1
-    print(score / total)
+    # rrd_score = 0
+    # for i in range(len(y_true) - 10):
+    #     tmp = []
+    #     for rrd in range(10):
+    #         try:
+    #             y_predict = res[i + rrd][0]
+    #             print(y_predict)
+    #             tmp.append(res[i + rrd][0])
+    #         except IndexError:
+    #             pass
+    #     if y_true[i] in tmp:
+    #         rrd_score += 1
+    # print('如果此次预测的数字出现在了未来10个就算正确的概率: {}'.format(rrd_score / (total - 10)))
 
     return score / total
 
 
 batch_size = 32
 embedding_dims = 200
-epochs = 5
+epochs = 10
 
 if __name__ == '__main__':
-    maxlen = 20
-    train_data_path = './data/new_train_diff.csv'
+    train = True
+    max_len = 10
+    class_num = 10
+    train_data_path = './data/new_train_diff+week.csv'
     print('Loading data...')
-    x, y, vocab, vocab_index = load_data(train_data_path, maxlen)
+
+    if train:
+        data = DataLoader(train_data_path, train=True, seq_len=max_len, class_num=class_num)
+    else:
+        data = DataLoader(train_data_path, train=False, seq_len=max_len, class_num=class_num)
+    x, y, vocab = data.x_train, data.y_train, data.vocabulary
 
     cx = x[:-288]
     cy = y[:-288]
@@ -96,46 +99,23 @@ if __name__ == '__main__':
     ox = x[-288:]
     oy = y[-288:]
 
-    with open('./config.pkl', 'wb') as out_p:
-        pickle.dump(vocab, out_p)
-
     x_train, x_test, y_train, y_test = train_test_split(cx, cy, test_size=0.01, shuffle=False, random_state=123)
 
     print(len(x_train), 'train sequences')
     print(len(x_test), 'test sequences')
-    # for item in x_test:
-    #     print(item)
-    # print('*'*50)
-    # print(y_test)
-
-    # print('Pad sequences (samples x time)...')
-    #
-    # x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=None, dtype='int32', padding='pre',
-    #                                                      truncating='pre', value=0.0)
-    # x_test = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=None, dtype='int32', padding='pre',
-    #                                                     truncating='pre', value=0.0)
-    # print('x_train shape:', x_train.shape)
-    # print('x_test shape:', x_test.shape)
 
     print('Build model...')
-    model = TextAttBiRNN(maxlen, len(vocab), embedding_dims).get_model()
+    model = TextAttBiRNN(max_len, len(vocab), embedding_dims, class_num=class_num).get_model()
     model.compile(optimizer='adam', loss=categorical_crossentropy, metrics=['accuracy'])
     model.summary()
+    if train:
+        print('Train...')
+        model.fit(x_train, y_train,
+                  batch_size=batch_size,
+                  epochs=epochs,
+                  shuffle=False,
+                  validation_data=(x_test, y_test))
 
-    print('Train...')
-    early_stopping = EarlyStopping(monitor='val_acc', patience=3, mode='max')
-    model.fit(x_train, y_train,
-              batch_size=batch_size,
-              epochs=epochs,
-              # verbose=0,
-              # callbacks=[early_stopping],
-              shuffle=False,
-              validation_data=(x_test, y_test))
-
-    model.save('res.model')
-
-    s = predict(ox, oy)
-    #
-    # txt = ['MaxLen: {}\tScore: {}'.format(maxlen, s)]
-    #
-    # save_txt_file(txt, './exp_res.txt')
+        model.save('res.model')
+    else:
+        s = predict(ox, oy)

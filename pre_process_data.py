@@ -12,7 +12,6 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from tools.dataio import load_txt_data, save_txt_file
-import random
 
 
 def build_data_set(_cycle=288):
@@ -68,25 +67,6 @@ def transpose(matrix):
 
 
 def plot_data(t, d, _cycle):
-    # time_stap = [str(x + 1) for x in range(288)]
-    # data = [str(x) for x in range(10)]
-    # data_map = np.array(build_attention_map(t, d))
-    #
-    # fig, ax = plt.subplots()
-    # im = ax.imshow(data_map)
-    #
-    # ax.set_xticks(np.arange(len(time_stap)))
-    # ax.set_yticks(np.arange(len(data)))
-    #
-    # plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-    #
-    # for i in range(len(data)):
-    #     for j in range(len(time_stap)):
-    #         text = ax.text(j, i, data_map[i, j], ha="center", va="center", color="w")
-    #
-    # ax.set_title("data")
-    # # fig.tight_layout()
-    # plt.show()
 
     data_map = np.array(build_attention_map(t, d, cycle))
 
@@ -117,15 +97,16 @@ def save_data_to_csv(label, day, week, time):
     data = []
     for i in range(len(label)):
         # raw = '{},{},{},{}'.format(label[i], day[i], week[i], time[i])
-        raw = '{},{}'.format(time[i], label[i])
+        # raw = '{},{}'.format(time[i], label[i])
+        raw = '{}{},{}'.format(time[i], week[i], label[i])
         data.append(raw)
-    save_txt_file(data, './data/new_train_diff.csv')
+    save_txt_file(data, './data/new_train_a+week.csv')
 
 
 if __name__ == '__main__':
     cycle = 288
     _time, _a, _b, _diff, _day, _week = build_data_set(cycle)
-    save_data_to_csv(_diff, _day, _week, _time)
+    save_data_to_csv(_a, _day, _week, _time)
     _data = _diff
     build_attention_map(_time, _data, cycle)
     plot_data(_time, _data, cycle)
