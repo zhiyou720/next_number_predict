@@ -14,44 +14,8 @@ from tools.dataio import load_txt_data
 from pre_process_data import build_data_set
 
 
-def build_seq_data_set(seq_len):
-    raw_data = load_txt_data('./data/raw_data.csv')
-    raw_data += load_txt_data('./data/new_raw_data.txt')
-    x_train = []
-    y_train = []
-    ptr = 0
-
-    while ptr + seq_len < len(raw_data):
-        delta = 0
-        tmp_x = []
-        # tmp_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        tmp_y = [0, 0]  # binary classification
-        while len(tmp_x) < seq_len:
-            tmp_x.append(raw_data[ptr + delta])
-            delta += 1
-        # print('delta:', delta)
-        # print('ptr:', ptr)
-        # print('slice:', tmp_x)
-        # print('compare slice:', raw_data[ptr:ptr+seq_len+1])
-        # print('label:', raw_data[ptr+seq_len])
-        x_train.append(tmp_x)
-
-        if 3 >= int(raw_data[ptr + seq_len]) > 0:
-            tmp_y[0] = 1
-        else:
-            tmp_y[1] = 1
-        # tmp_y[int(raw_data[ptr + seq_len])] = 1  # 10 classification
-        # print(tmp_y)
-        y_train.append(tmp_y)
-        # ptr += (delta+1)
-        ptr += 1
-
-    # print(len(x_train), len(y_train))
-    return x_train, y_train
-
-
-def build_seq_data_set2(seq_len=10):
-    raw_data = load_txt_data('./data/new_train_diff.csv')
+def build_seq_data_set(data_path, seq_len=20, n_class=2):
+    raw_data = load_txt_data(data_path)
     # print(len(raw_data))
     ptr = 0
     x_train = []
@@ -59,10 +23,10 @@ def build_seq_data_set2(seq_len=10):
     while ptr + seq_len < len(raw_data):
         delta = 0
         tmp_x = []
-        # tmp_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        tmp_y = [0, 0]
+        tmp_y = [0 for x in range(n_class)]
         while len(tmp_x) < seq_len:
-            tmp_x.append(raw_data[ptr + delta].split(',')[0])
+            stack = raw_data[ptr + delta].split(',')
+            tmp_x.append(stack[0] + stack[1])
             delta += 1
         # print('delta:', delta)
         # print('ptr:', ptr)
@@ -71,7 +35,7 @@ def build_seq_data_set2(seq_len=10):
         # print('label:', raw_data[ptr+seq_len])
         x_train.append(tmp_x)
 
-        if int(raw_data[ptr + seq_len].split(',')[1]) in [1, 2, 3, 4]:
+        if int(raw_data[ptr + seq_len].split(',')[1]) in [1, 2, 3, 4, 5]:
             tmp_y[0] = 1
         else:
             tmp_y[1] = 1
@@ -109,14 +73,13 @@ def build_input_data(sentences, labels, vocabulary):
     return [x, y]
 
 
-def load_data(seq_len):
+def load_data(data_path, seq_len):
     """
     Loads and preprocessed data for the dataset.
     Returns input vectors, labels, vocabulary, and inverse vocabulary.
     """
     # Load and preprocess data
-    # sentences, labels = build_seq_data_set(seq_len)
-    sentences, labels = build_seq_data_set2()
+    sentences, labels = build_seq_data_set(data_path, seq_len=seq_len)
 
     vocabulary, vocabulary_inv = build_vocab(sentences)
     x, y = build_input_data(sentences, labels, vocabulary)
@@ -126,5 +89,5 @@ def load_data(seq_len):
 if __name__ == '__main__':
     _, c, v, vi = load_data(5)
     print(_)
-    build_seq_data_set2()
+    build_seq_data_set()
     # print(build_seq_data_set2(5, 10))

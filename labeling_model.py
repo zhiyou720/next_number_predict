@@ -10,12 +10,10 @@
 import keras
 import pickle
 # from keras.losses import categorical_crossentropy
-from labeling_data_loader import load_data
+from tools.labeling_data_loader import load_data
 from keras_contrib.layers.crf import CRF
 from keras_contrib.losses import crf_loss
 from keras_contrib.metrics import crf_accuracy
-from keras.engine.base_layer import Layer
-from keras import initializers, constraints, regularizers
 
 
 def create_model(dic_config,

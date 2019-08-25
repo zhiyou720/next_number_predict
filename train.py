@@ -17,17 +17,17 @@ import pickle
 from tools.dataio import save_txt_file
 
 
-def predict():
+def predict(x_open_test, y_open_test):
     model = keras.models.load_model('res.model')
     # model.load_weights('./config.pkl')
 
-    score = model.evaluate(x_test, y_test, batch_size=16)
+    score = model.evaluate(x_open_test, y_open_test, batch_size=16)
     print(score)
     print('Test...')
     # x_test = x_test[:10]
     # y_test = y_test[:10]
-    result = model.predict(x_test)
-    print(result)
+    result = model.predict(x_open_test)
+    # print(result)
 
     # for item in x_test:
     #     result = model.predict([item])
@@ -54,21 +54,21 @@ def predict():
         bubbleSort(tmp)
         __ = []
         __.append(item.index(tmp[0]))
-        __.append(item.index(tmp[1]))
-        __.append(item.index(tmp[2]))
+        # __.append(item.index(tmp[1]))
+        # __.append(item.index(tmp[2]))
         res.append(__)
 
-    # print(res)
-
+    print(res)
+    print(x_open_test)
     y_true = []
 
-    for y in y_test:
+    for y in y_open_test:
         _ = list(y).index(1)
         y_true.append(_)
-        # print(_)
+        print(_)
 
     score = 0
-    total = len(x_test)
+    total = len(x_open_test)
 
     for i in range(len(y_true)):
         # print(res[i], y_true[i])
@@ -80,22 +80,33 @@ def predict():
     return score / total
 
 
-batch_size = 16
-embedding_dims = 50
-epochs = 1000
+batch_size = 32
+embedding_dims = 200
+epochs = 5
 
 if __name__ == '__main__':
-    maxlen = 10
-
+    maxlen = 20
+    train_data_path = './data/new_train_diff.csv'
     print('Loading data...')
-    x, y, vocab, vocab_index = load_data(maxlen)
+    x, y, vocab, vocab_index = load_data(train_data_path, maxlen)
+
+    cx = x[:-288]
+    cy = y[:-288]
+
+    ox = x[-288:]
+    oy = y[-288:]
+
     with open('./config.pkl', 'wb') as out_p:
         pickle.dump(vocab, out_p)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.01)
+    x_train, x_test, y_train, y_test = train_test_split(cx, cy, test_size=0.01, shuffle=False, random_state=123)
 
     print(len(x_train), 'train sequences')
     print(len(x_test), 'test sequences')
+    # for item in x_test:
+    #     print(item)
+    # print('*'*50)
+    # print(y_test)
 
     # print('Pad sequences (samples x time)...')
     #
@@ -113,17 +124,17 @@ if __name__ == '__main__':
 
     print('Train...')
     early_stopping = EarlyStopping(monitor='val_acc', patience=3, mode='max')
-    model.fit(x, y,
+    model.fit(x_train, y_train,
               batch_size=batch_size,
               epochs=epochs,
               # verbose=0,
               # callbacks=[early_stopping],
-              # shuffle=True,
+              shuffle=False,
               validation_data=(x_test, y_test))
 
     model.save('res.model')
 
-    s = predict()
+    s = predict(ox, oy)
     #
     # txt = ['MaxLen: {}\tScore: {}'.format(maxlen, s)]
     #

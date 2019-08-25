@@ -22,6 +22,7 @@ print('Test...')
 result = model.predict(x_test)
 print(result)
 
+
 # for item in x_test:
 #     result = model.predict([item])
 #     print(result)

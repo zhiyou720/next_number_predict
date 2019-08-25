@@ -123,7 +123,7 @@ def save_data_to_csv(label, day, week, time):
 
 
 if __name__ == '__main__':
-    cycle = 4032
+    cycle = 288
     _time, _a, _b, _diff, _day, _week = build_data_set(cycle)
     save_data_to_csv(_diff, _day, _week, _time)
     _data = _diff

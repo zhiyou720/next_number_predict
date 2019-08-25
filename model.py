@@ -113,7 +113,7 @@ class TextAttBiRNN(object):
                  class_num=2,
                  last_activation='softmax'):
         self.maxlen = maxlen
-        self.hidden_units = 10
+        self.hidden_units = 100
         self.max_features = max_features
         self.embedding_dims = embedding_dims
         self.class_num = class_num
@@ -125,7 +125,7 @@ class TextAttBiRNN(object):
 
         bn = keras.layers.BatchNormalization()(embedding)
 
-        drop = keras.layers.Dropout(0.2)(bn)
+        drop = keras.layers.Dropout(0.)(bn)
 
         lstm1 = CuDNNLSTM(self.hidden_units, return_sequences=True)  # LSTM or GRU
 
