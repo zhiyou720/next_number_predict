@@ -48,12 +48,12 @@ def predict(x_open_test, y_open_test):
         y_true.append(_)
 
     total = len(x_open_test)
+
     for rng in range(5):
         score = 0
         for i in range(len(y_true)):
             if y_true[i] in res[i][:rng + 1]:
                 score += 1
-                # print(y_true[i], res[i])
             if rng == 4:
                 print('真实值: {}, 预测值: {}'.format(y_true[i], res[i][:5]))
         print('预测概率前 {} 个数: {}'.format(rng + 1, score / total))
