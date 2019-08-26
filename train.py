@@ -76,7 +76,7 @@ def predict(x_open_test, y_open_test):
 
 if __name__ == '__main__':
     train = True
-    GPU = False
+    GPU = True
     batch_size = 32
     embedding_dims = 200
     epochs = 12
