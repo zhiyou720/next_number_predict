@@ -12,7 +12,8 @@ from keras import Input, Model
 from keras import backend as K
 from keras.engine.topology import Layer
 from keras import initializers, regularizers, constraints
-from keras.layers import Embedding, Dense, Dropout, Bidirectional, CuDNNLSTM, Conv1D, GlobalMaxPooling1D, Concatenate
+from keras.layers import Embedding, Dense, Dropout, Bidirectional, CuDNNLSTM, LSTM, Conv1D, GlobalMaxPooling1D, \
+    Concatenate
 
 
 class Attention(Layer):
@@ -111,13 +112,16 @@ class Attention(Layer):
 class TextAttBiRNN(object):
     def __init__(self, maxlen, max_features, embedding_dims,
                  class_num=10,
-                 last_activation='softmax'):
+                 last_activation='softmax',
+                 GPU=True):
         self.maxlen = maxlen
         self.hidden_units = 100
         self.max_features = max_features
         self.embedding_dims = embedding_dims
         self.class_num = class_num
         self.last_activation = last_activation
+
+        self.GPU = GPU
 
     def get_model(self):
         input = Input((self.maxlen,))
@@ -127,11 +131,15 @@ class TextAttBiRNN(object):
 
         drop = keras.layers.Dropout(0.5)(bn)
 
-        lstm1 = CuDNNLSTM(self.hidden_units, return_sequences=True)  # LSTM or GRU
+        # lstm1 = CuDNNLSTM(self.hidden_units, return_sequences=True)  # LSTM or GRU
+        #
+        # lstm2 = CuDNNLSTM(self.hidden_units, return_sequences=True)(drop)  # LSTM or GRU
 
-        lstm2 = CuDNNLSTM(self.hidden_units, return_sequences=True)(drop)  # LSTM or GRU
+        if self.GPU:
+            lstm3 = CuDNNLSTM(self.hidden_units)(drop)  # LSTM or GRU
+        else:
+            lstm3 = LSTM(self.hidden_units)(drop)  # LSTM or GRU
 
-        lstm3 = CuDNNLSTM(self.hidden_units)(drop)  # LSTM or GRU
 
         # attn = Attention(int(self.maxlen))
         # model.add(attn)

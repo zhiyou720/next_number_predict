@@ -48,12 +48,13 @@ class DataLoader:
 
             x_train.append(tmp_x)
 
-            # if int(raw_data[ptr + seq_len].split(',')[1]) in [1, 2, 3, 4, 5]:
-            #     tmp_y[0] = 1
-            # else:
-            #     tmp_y[1] = 1
+            if int(raw_data[ptr + self.seq_len].split(',')[1]) in [0, 8, 9]:
+                tmp_y[0] = 1
+            else:
+                # tmp_y[1] = 1
+                tmp_y[int(raw_data[ptr + self.seq_len].split(',')[1])] = 1  # 10 classification
 
-            tmp_y[int(raw_data[ptr + self.seq_len].split(',')[1])] = 1  # 10 classification
+            # tmp_y[int(raw_data[ptr + self.seq_len].split(',')[1])] = 1  # 10 classification
             y_train.append(tmp_y)
             ptr += 1
         return x_train, y_train

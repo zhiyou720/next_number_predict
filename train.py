@@ -75,13 +75,14 @@ def predict(x_open_test, y_open_test):
 
 
 if __name__ == '__main__':
-    train = False
+    train = True
+    GPU = False
     batch_size = 32
     embedding_dims = 200
     epochs = 12
 
     max_len = 10
-    class_num = 10
+    class_num = 8
     train_data_path = './data/new_train_diff+week.csv'
     print('Loading data...')
 
@@ -103,7 +104,7 @@ if __name__ == '__main__':
     print(len(x_test), 'test sequences')
 
     print('Build model...')
-    model = TextAttBiRNN(max_len, len(vocab), embedding_dims, class_num=class_num).get_model()
+    model = TextAttBiRNN(max_len, len(vocab), embedding_dims, class_num=class_num, GPU=GPU).get_model()
     model.compile(optimizer='adam', loss=categorical_crossentropy, metrics=['accuracy'])
     model.summary()
     if train:
