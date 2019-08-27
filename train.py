@@ -58,7 +58,11 @@ def predict(x_open_test, y_open_test, _max_predict, _future):
 
     score = 0
     for i in range(len(y_true)):
-        if y_true[i] in res[i][:_max_predict]:
+
+        if y_true[i] == res[i][0]:
+            score += 1
+            print('真实值: {}, 预测值: {}, 精准预测成功'.format(y_true[i], res[i][:_max_predict]))
+        elif y_true[i] in res[i][:_max_predict]:
             score += 1
             print('真实值: {}, 预测值: {}, 预测成功'.format(y_true[i], res[i][:_max_predict]))
         else:
