@@ -14,7 +14,7 @@ from keras.losses import categorical_crossentropy
 from sklearn.model_selection import train_test_split
 
 
-def predict(x_open_test, y_open_test):
+def predict(x_open_test, y_open_test, _max_predict, _future):
     _model = keras.models.load_model('./model/res.model')
 
     score = _model.evaluate(x_open_test, y_open_test, batch_size=16)
@@ -37,7 +37,7 @@ def predict(x_open_test, y_open_test):
         tmp = item[:]
         bubble_sort(tmp)
         __ = []
-        for i in range(len(tmp) - 5):
+        for i in range(len(tmp)):
             __.append(item.index(tmp[i]))
         res.append(__)
 
@@ -54,35 +54,40 @@ def predict(x_open_test, y_open_test):
         for i in range(len(y_true)):
             if y_true[i] in res[i][:rng + 1]:
                 score += 1
-            if rng == 4:
-                print('真实值: {}, 预测值: {}'.format(y_true[i], res[i][:5]))
         print('预测概率前 {} 个数: {}'.format(rng + 1, score / total))
-    res_one = []
-    for item in result:
-        item = list(item)
-        res_one.append(item.index(max(item)))
 
-    for i in range(5, 21):
-        y_true_x = y_true[:-i]
-        _total = len(y_true_x)
-        rrd_score = 0
-        for j in range(len(y_true_x)):
-            if y_true[j] in res_one[j:j + i]:
-                rrd_score += 1
-        print('如果此次预测的数字出现在了未来{}个就算正确的概率: {}'.format(i, rrd_score / _total))
+    score = 0
+    for i in range(len(y_true)):
+        if y_true[i] in res[i][:_max_predict]:
+            score += 1
+            print('真实值: {}, 预测值: {}, 预测成功'.format(y_true[i], res[i][:_max_predict]))
+        else:
+            ptr = 0
+            while ptr <= _max_predict:
+                if ptr == _max_predict:
+                    print('真实值: {}, 预测值: {}, 预测失败'.format(y_true[i], res[i][:_max_predict]))
+                    break
+                elif res[i][ptr] in y_true[i:i + _future]:
+                    score += 1
+                    print('真实值: {}, 预测值: {}, 其中 {} 将在未来 {} 行之内出现'
+                          .format(y_true[i], res[i][:_max_predict], res[i][ptr], _future))
+                    break
+                else:
+                    ptr += 1
+    print('预测概率 {}'.format(score / total))
 
     return score / total
 
 
 if __name__ == '__main__':
-    train = True
+    train = False
     GPU = True
     batch_size = 32
     embedding_dims = 200
     epochs = 12
 
     max_len = 10
-    class_num = 8
+    class_num = 10
     train_data_path = './data/new_train_diff+week.csv'
     print('Loading data...')
 
@@ -117,4 +122,6 @@ if __name__ == '__main__':
 
         model.save('./model/res.model')
     else:
-        s = predict(ox, oy)
+        max_predict = 3
+        future = 5
+        s = predict(ox, oy, max_predict, future)
