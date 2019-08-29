@@ -86,11 +86,15 @@ class DataLoader:
         """
         # Build vocabulary
         word_counts = Counter(itertools.chain(*sentences))
+        # print(word_counts)
         # Mapping from index to word
         vocabulary_inv = [x[0] for x in word_counts.most_common()]
         vocabulary_inv = list(sorted(vocabulary_inv))
         # Mapping from word to index
         vocabulary = {x: i for i, x in enumerate(vocabulary_inv)}
+
+        vocabulary.update(unk=len(vocabulary))
+
         return vocabulary, vocabulary_inv
 
     @staticmethod
