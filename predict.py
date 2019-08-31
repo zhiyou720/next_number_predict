@@ -104,33 +104,27 @@ class ResultAnalysis:
         return y_true
 
 
-def word2id(word):
-    with open('./model/vocab_config.pkl', 'rb') as inp:
-        vocabulary = pickle.load(inp)
+class Predict:
+    def __init__(self):
+        self.model = keras.models.load_model(MODEL_PATH)
 
-    id_list = []
-    for feat in word:
-        try:
-            id_list.append(vocabulary[str(feat)])
-        except KeyError:
-            id_list.append(vocabulary['unk'])
+    @staticmethod
+    def word2id(word):
+        with open('./model/vocab_config.pkl', 'rb') as inp:
+            vocabulary = pickle.load(inp)
+        id_list = []
+        for feat in word:
+            try:
+                id_list.append(vocabulary[str(feat)])
+            except KeyError:
+                id_list.append(vocabulary['unk'])
 
-    return numpy.array([id_list])
+        return numpy.array([id_list])
 
+    def predict_one(self, sequence):
+        _embed = self.word2id(sequence)
 
-def predict_one():
-    pass
-
-
-def predict_ui(_last_sequence, _future_sequence):
-    _model = keras.models.load_model(MODEL_PATH)
-
-    res = []
-    for feature in _future_sequence:
-
-        _embed = word2id(_last_sequence)
-
-        y_predict = _model.predict(_embed)
+        y_predict = self.model.predict(_embed)
 
         _id = []
         _prob = []
@@ -147,14 +141,32 @@ def predict_ui(_last_sequence, _future_sequence):
             pair = list(pair)
 
             stack.append("预测: {}, 概率: {}".format(pair[0], pair[1]))
-        stack.insert(0, '真实值: {}'.format(feature[-1]))
-        res.append(','.join(stack))
-        print('真实值: {},'.format(feature[-1]), '{}'.format(stack[1]))
+        return stack
 
-        _last_sequence.append(feature)
-        _last_sequence.pop(0)
+    def predict_ui(self, _last_sequence, _future_sequence):
+        res = []
+        i = 1
 
-    return res
+        fist_predict = self.predict_one(_last_sequence)
+        print('********第{}次预测********'.format(i))
+        print('\n'.join(fist_predict))
+        print('\n')
+
+        res.append(','.join(fist_predict))
+
+        for feature in _future_sequence:
+            _last_sequence.append(feature)
+            _last_sequence.pop(0)
+
+            predict = self.predict_one(_last_sequence)
+            i += 1
+            print('********第{}次预测********'.format(i))
+            print('\n'.join(predict))
+            print('\n')
+            res.append(','.join(predict))
+            # print('真实值: {},'.format(feature[-1]), '{}'.format(stack[1]))
+
+        return res
 
 
 if __name__ == '__main__':
@@ -171,6 +183,8 @@ if __name__ == '__main__':
         raw = item.split(',')
         train_sequence.append(raw[0] + raw[1])
     last_sequence = train_sequence[-10:]
-    r = predict_ui(last_sequence, future_sequence)
 
+    _ = Predict()
+
+    r = _.predict_ui(last_sequence, future_sequence)
     save_txt_file(r, './res/future_predict.csv', encoding='gbk')
