@@ -7,6 +7,7 @@
 @Date     :2019/8/11
 @Desc     : 
 """
+import os
 
 
 def load_txt_data(path):
@@ -28,7 +29,7 @@ def load_txt_data(path):
     return res
 
 
-def save_txt_file(data, path, end='\n'):
+def save_txt_file(data, path, end='\n', encoding='utf-8'):
     """
     This func is used to saving data to txt file
     support data type:
@@ -37,6 +38,7 @@ def save_txt_file(data, path, end='\n'):
     str: will save single char to each line
     tuple: Fully support
     set: Fully support
+    :param encoding:
     :param data: data
     :param path: path to save
     :type path: str
@@ -47,9 +49,29 @@ def save_txt_file(data, path, end='\n'):
     if type(data) not in [list, dict, str, tuple, set] or type(path) != str:
         raise TypeError
 
-    with open(path, 'a', encoding='utf-8') as f:
+    remove_old_file(path)
+
+    with open(path, 'a', encoding=encoding) as f:
         for item in data:
-            if not item:
-                f.write(end)
-            else:
-                f.write(item + end)
+            f.write(str(item) + end)
+
+
+def remove_old_file(path):
+    """
+    :param path:
+    :type path: str
+    :return:
+    """
+    if check_dir(path):
+        os.remove(path)
+
+
+def check_dir(path):
+    """
+    check dir exists
+    :param path:
+    :type path:str
+    :return:
+    :rtype: bool
+    """
+    return os.path.exists(path)
