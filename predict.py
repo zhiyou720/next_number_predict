@@ -17,7 +17,7 @@ from config import train_data_path, MODEL_PATH
 class ResultAnalysis:
     def __init__(self, x_open_test, y_open_test, _max_predict, _future, last_sequence=None):
         print('Test...')
-        self.model = keras.models.load_model('./model/res.model')
+        self.model = keras.models.load_model(MODEL_PATH)
 
         self.last_sequence = last_sequence
 
