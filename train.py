@@ -11,7 +11,7 @@ from model import TextAttBiRNN
 from predict import ResultAnalysis
 from keras.losses import categorical_crossentropy
 from config import max_len, vocab, embedding_dims, class_num, GPU, train, train_set_x, train_set_y, batch_size, \
-    epochs, x_valid, y_valid, test_set_x, test_set_y, MODEL_PATH
+    epochs, x_valid, y_valid, test_set_x, test_set_y, MODEL_PATH, SHUFFLE
 
 if __name__ == '__main__':
     print('Build model...')
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         model.fit(train_set_x, train_set_y,
                   batch_size=batch_size,
                   epochs=epochs,
-                  shuffle=False,
+                  shuffle=SHUFFLE,
                   validation_data=(x_valid, y_valid)
                   )
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     else:
 
         last_sequence = train_set_x[-1]
-        max_predict = 3
-        future = 5
+        max_predict = 5
+        future = 1
         s = ResultAnalysis(test_set_x, test_set_y, max_predict, future)
         s.predict_analyze()

@@ -48,6 +48,38 @@ def build_data_set(_cycle=288):
     return time_step, a, b, diff, day, week
 
 
+def build_data_set2(_cycle=288):
+    """
+    build time step data
+    :return:
+    """
+    raw_data = load_txt_data('./data/3.9-9.4.csv')
+    time_step = []
+    day = []
+    week = []
+    a = []
+    b = []
+    diff = []
+    t = 1
+    i = 0
+    for item in raw_data:
+        raw = item.split(',')
+        # print(i)
+        i += 1
+        if raw:
+            a.append(raw[2])
+            b.append(raw[3])
+
+            day.append(raw[0][6:8])
+            week.append(str(raw[1])[-1])
+
+            diff.append(raw[4])
+
+            time_step.append(str(raw[1])[:-1])
+
+    return time_step, a, b, diff, day, week
+
+
 def build_attention_map(t, d, _cycle):
     data_map = [[0 for x in range(_cycle)] for y in range(10)]
 
@@ -67,7 +99,6 @@ def transpose(matrix):
 
 
 def plot_data(t, d, _cycle):
-
     data_map = np.array(build_attention_map(t, d, cycle))
 
     data_map_t = transpose(data_map)
@@ -100,13 +131,13 @@ def save_data_to_csv(label, day, week, time):
         # raw = '{},{}'.format(time[i], label[i])
         raw = '{}{},{}'.format(time[i], week[i], label[i])
         data.append(raw)
-    save_txt_file(data, './data/new_train_a+week.csv')
+    save_txt_file(data, './data/new_train_a+week_9.4.csv')
 
 
 if __name__ == '__main__':
     cycle = 288
-    _time, _a, _b, _diff, _day, _week = build_data_set(cycle)
+    _time, _a, _b, _diff, _day, _week = build_data_set2(cycle)
     save_data_to_csv(_a, _day, _week, _time)
-    _data = _diff
+    _data = _a
     build_attention_map(_time, _data, cycle)
     plot_data(_time, _data, cycle)
