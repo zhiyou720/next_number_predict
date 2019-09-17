@@ -16,9 +16,9 @@ from pre_process_data_loader import OriginData
 
 
 class DataLoader:
-    def __init__(self, time_point_cycle=288, diy_feature=False, data_to_predict='A', seq_len=10, class_num=10,
+    def __init__(self, path, time_point_cycle=288, diy_feature=False, data_to_predict='A', seq_len=10, class_num=10,
                  train=False, vocab_path='./model/vocab_config.pkl'):
-        self.origin_data_set = OriginData(path='./data/stage_2_data.csv',
+        self.origin_data_set = OriginData(path=path,
                                           time_point_cycle=time_point_cycle,
                                           diy_feature=diy_feature)
         print('Origin data: {}'.format(len(self.origin_data_set.year)))
@@ -146,6 +146,6 @@ class DataLoader:
 
 
 if __name__ == '__main__':
-    _d = DataLoader('./data/new_train_a+week.csv')
+    _d = DataLoader('./data/stage_2_data.csv')
     _, c, v, = _d.x_train, _d.y_train, _d.vocabulary
     print(_)
