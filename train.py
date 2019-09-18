@@ -11,11 +11,12 @@ from model import TextAttBiRNN
 from predict import ResultAnalysis
 from keras.losses import categorical_crossentropy
 from config import max_len, vocab, embedding_dims, class_num, GPU, train, train_set_x, train_set_y, batch_size, \
-    epochs, x_valid, y_valid, test_set_x, test_set_y, MODEL_PATH, SHUFFLE
+    epochs, x_valid, y_valid, test_set_x, test_set_y, MODEL_PATH, SHUFFLE, TOTAL_FEATURE_FACTOR_NUM
 
 if __name__ == '__main__':
     print('Build model...')
-    model = TextAttBiRNN(max_len, len(vocab), embedding_dims, class_num=class_num, GPU=GPU).get_model()
+    model = TextAttBiRNN(max_len * TOTAL_FEATURE_FACTOR_NUM, len(vocab), embedding_dims, class_num=class_num,
+                         GPU=GPU).get_model()
     model.compile(optimizer='adam', loss=categorical_crossentropy, metrics=['accuracy'])
     model.summary()
     if train:

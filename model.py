@@ -140,7 +140,6 @@ class TextAttBiRNN(object):
         else:
             lstm3 = LSTM(self.hidden_units)(drop)  # LSTM or GRU
 
-
         # attn = Attention(int(self.maxlen))
         # model.add(attn)
         # convs = []

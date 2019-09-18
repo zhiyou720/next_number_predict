@@ -14,6 +14,9 @@ from tools.dataio import load_txt_data
 class OriginData:
 
     def __init__(self, path: str, time_point_cycle=None, diy_feature=False):
+
+        print('读取原始数据，进行预处理...')
+
         self.raw_data = load_txt_data(path)
         self.base_feature_num = 5
         try:
@@ -46,6 +49,8 @@ class OriginData:
         if diy_feature:
             self.diy_feature()
 
+        print('初步预处理结束...')
+
     def load_data(self):
         tp = 1
         for i in range(len(self.raw_data)):
@@ -55,9 +60,10 @@ class OriginData:
 
             self.date.append(item[0])
 
-            self.year.append(item[0][:4])
-            self.month.append(item[0][4:6])
-            self.day.append(item[0][6:])
+            self.year.append('y' + item[0][:4])
+            self.month.append('m' + item[0][4:6])
+            self.week.append('w' + item[1][-1])
+            self.day.append('d' + item[0][6:])
 
             if self.time_point_cycle:
                 if tp > self.time_point_cycle:
@@ -66,8 +72,6 @@ class OriginData:
                 tp += 1
             else:
                 self.time_point.append(int(item[1][:-1]))
-
-            self.week.append(item[1][-1])
 
             self.data_a.append(item[2])
             self.data_b.append(item[3])
