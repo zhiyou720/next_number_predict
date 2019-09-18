@@ -109,8 +109,6 @@ class DataLoader:
                 delta += 1
                 p += 1
 
-            print(tmp_x)
-
             x_train.append(tmp_x)
 
             if self.one_class_set:
