@@ -9,7 +9,7 @@ SHUFFLE = False  # 打乱数据顺序，我们数据本来就是有序的，不�
 DIY_FEATURE = False  # 是否自行添加特征了, 如果需要添加，请直接在原始数据后增加新的列
 PLOT_HEAT_MAP = False  # 是否在读取完数据后绘制数据点分布热力图
 
-BASE_FEATURE_FACTOR_NUM = 6  # 基础特征的数量 6个 不能改 如果需要改的话要改代码
+BASE_FEATURE_FACTOR_NUM = 5  # 基础特征的数量 5个 不能改 如果需要改的话要改代码
 DIY_FEATURE_FACTOR_NUM = 0  # 自定义特征的数量 有几列填几
 
 TOTAL_FEATURE_FACTOR_NUM = BASE_FEATURE_FACTOR_NUM + DIY_FEATURE_FACTOR_NUM
