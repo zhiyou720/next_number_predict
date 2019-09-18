@@ -21,7 +21,7 @@ batch_size = 128
 embedding_dims = 200
 epochs = 17
 
-max_len = 3  # 3 is best
+max_len = 10  # 3 is best
 class_num = 8  # n分类
 ONE_CLASS_SET = [0, 8, 9]  # 把几个数字视为一类, 最小的数字放在最前面
 train_data_path = './data/stage_2_data.csv'
@@ -38,7 +38,7 @@ else:
                       one_class_set=ONE_CLASS_SET, plot_heat_map=PLOT_HEAT_MAP, train=False,
                       seq_len=max_len, class_num=class_num)
 
-x, y, vocab = data.x_train, data.y_train, data.vocabulary
+x, y, vocab = data.x_train[:50000], data.y_train[:50000], data.vocabulary
 
 if USE_ALL_DATA:
     train_set_x = x
