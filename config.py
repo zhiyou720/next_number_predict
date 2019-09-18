@@ -17,7 +17,7 @@ TOTAL_FEATURE_FACTOR_NUM = BASE_FEATURE_FACTOR_NUM + DIY_FEATURE_FACTOR_NUM
 TIME_POINT_CYCLE = 288  # 时间点循环
 DATA_TO_PREDICT = 'A'  # 选择 A B DIFF DIFF_ABS 填入, 可以控制模型预测A还是B还是差值还是差值的绝对值
 
-batch_size = 32
+batch_size = 128
 embedding_dims = 200
 epochs = 17
 
