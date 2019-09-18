@@ -38,7 +38,7 @@ else:
                       one_class_set=ONE_CLASS_SET, plot_heat_map=PLOT_HEAT_MAP, train=False,
                       seq_len=max_len, class_num=class_num)
 
-x, y, vocab = data.x_train[:50000], data.y_train[:50000], data.vocabulary
+x, y, vocab = data.x_train, data.y_train, data.vocabulary
 
 if USE_ALL_DATA:
     train_set_x = x
