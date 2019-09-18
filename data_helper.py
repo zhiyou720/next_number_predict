@@ -98,13 +98,13 @@ class DataLoader:
         features = self.build_features()
         labels = self.build_labels()
 
-        while ptr + self.seq_len < len(self.origin_data_set.year):
+        while ptr + self.seq_len < len(self.origin_data_set.year[:200]):
             delta = 0
             tmp_x = []
             tmp_y = [0 for x in range(self.class_num)]
             p = 1
             while p <= self.seq_len:
-                stack = features[ptr + delta] + list(labels[ptr + delta])
+                stack = features[ptr + delta][:-1] + [features[ptr + delta][-1] + labels[ptr + delta]]
                 tmp_x += stack
                 delta += 1
                 p += 1
