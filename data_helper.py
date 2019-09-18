@@ -98,7 +98,7 @@ class DataLoader:
         features = self.build_features()
         labels = self.build_labels()
 
-        while ptr + self.seq_len < len(self.origin_data_set.year[:2000]):
+        while ptr + self.seq_len < len(self.origin_data_set.year):
             delta = 0
             tmp_x = []
             tmp_y = [0 for x in range(self.class_num)]
