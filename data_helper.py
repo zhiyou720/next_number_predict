@@ -15,7 +15,7 @@ from pre_process_data_loader import OriginData
 
 
 class DataLoader:
-    def __init__(self, path, time_point_cycle=288, diy_feature=False, plot_heat_map=False,
+    def __init__(self, path: str, time_point_cycle=288, diy_feature=False, diy_feature_num=0, plot_heat_map=False,
                  data_to_predict='A', seq_len=10, class_num=10, one_class_set=None,
                  train=False, vocab_path='./model/vocab_config.pkl'):
 
@@ -26,8 +26,7 @@ class DataLoader:
             pre_class = 10 - n + 1
             if class_num != pre_class:
                 print('设置的分类数量不正确！')
-                print('将 {} 设置为一类, 总共有 {} 个类别'.format(' '.join([str(x) for x in one_class_set]),
-                                                      pre_class))
+                print('将 {} 设置为一类, 总共有 {} 个类别'.format(' '.join([str(x) for x in one_class_set]), pre_class))
 
                 class_num = pre_class
 
@@ -44,6 +43,10 @@ class DataLoader:
         print('开始进行batch和字典制作（读取）...')
 
         self.diy_feature = diy_feature
+        self.diy_feature_num = diy_feature_num
+        if self.diy_feature:
+            print('发现DIY特征{}个'.format(self.origin_data_set.diy_feature_num))
+            print('使用DIY特征{}个'.format(self.diy_feature_num))
 
         self.data_to_predict = data_to_predict
 
@@ -67,7 +70,8 @@ class DataLoader:
                    'tp' + str(self.origin_data_set.time_point[i])]
 
             if self.diy_feature:
-                tmp += self.origin_data_set.diy_feature_set[i]
+                tmp += self.origin_data_set.diy_feature_set[i][:self.diy_feature_num]
+            # print(tmp)
             feature.append(tmp)
         return feature
 
@@ -104,7 +108,9 @@ class DataLoader:
             tmp_y = [0 for x in range(self.class_num)]
             p = 1
             while p <= self.seq_len:
-                stack = features[ptr + delta][:-1] + [features[ptr + delta][-1] + labels[ptr + delta]]
+                stack = features[ptr + delta][:4] + [features[ptr + delta][4] + labels[ptr + delta]]
+                if self.diy_feature:
+                    stack += features[ptr + delta][5:]
                 tmp_x += stack
                 delta += 1
                 p += 1

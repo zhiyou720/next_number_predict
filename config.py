@@ -6,11 +6,11 @@ GPU = True  # 是否开启GPU模式
 VALIDATION = False  # 不用改
 USE_ALL_DATA = False  # 是否使用全部训练数据 做未来预测一定要选True
 SHUFFLE = False  # 打乱数据顺序，我们数据本来就是有序的，不建议打乱
-DIY_FEATURE = False  # 是否自行添加特征了, 如果需要添加，请直接在原始数据后增加新的列
+DIY_FEATURE = True  # 是否自行添加特征了, 如果需要添加，请直接在原始数据后增加新的列
 PLOT_HEAT_MAP = False  # 是否在读取完数据后绘制数据点分布热力图
 
 BASE_FEATURE_FACTOR_NUM = 5  # 基础特征的数量 5个 不能改 如果需要改的话要改代码
-DIY_FEATURE_FACTOR_NUM = 0  # 自定义特征的数量 有几列填几
+DIY_FEATURE_FACTOR_NUM = 4  # 自定义特征的数量 指定使用几个（列）新增特征
 
 TOTAL_FEATURE_FACTOR_NUM = BASE_FEATURE_FACTOR_NUM + DIY_FEATURE_FACTOR_NUM
 
@@ -30,15 +30,15 @@ MODEL_PATH = './model/res.stage2.model'
 print('Loading data...')
 
 if train:
-    data = DataLoader(train_data_path, time_point_cycle=TIME_POINT_CYCLE, diy_feature=False,
-                      one_class_set=ONE_CLASS_SET, plot_heat_map=PLOT_HEAT_MAP, train=True,
-                      seq_len=max_len, class_num=class_num)
+    data = DataLoader(train_data_path, time_point_cycle=TIME_POINT_CYCLE, diy_feature=DIY_FEATURE,
+                      diy_feature_num=DIY_FEATURE_FACTOR_NUM, one_class_set=ONE_CLASS_SET, plot_heat_map=PLOT_HEAT_MAP,
+                      train=True, seq_len=max_len, class_num=class_num)
 else:
-    data = DataLoader(train_data_path, time_point_cycle=TIME_POINT_CYCLE, diy_feature=False,
-                      one_class_set=ONE_CLASS_SET, plot_heat_map=PLOT_HEAT_MAP, train=False,
-                      seq_len=max_len, class_num=class_num)
+    data = DataLoader(train_data_path, time_point_cycle=TIME_POINT_CYCLE, diy_feature=DIY_FEATURE,
+                      diy_feature_num=DIY_FEATURE_FACTOR_NUM, one_class_set=ONE_CLASS_SET, plot_heat_map=PLOT_HEAT_MAP,
+                      train=False, seq_len=max_len, class_num=class_num)
 
-x, y, vocab = data.x_train, data.y_train, data.vocabulary
+x, y, vocab = data.x_train[:10000], data.y_train[:10000], data.vocabulary
 
 if USE_ALL_DATA:
     train_set_x = x

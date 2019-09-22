@@ -124,8 +124,8 @@ class TextAttBiRNN(object):
         self.GPU = GPU
 
     def get_model(self):
-        input = Input((self.maxlen,))
-        embedding = Embedding(self.max_features, self.embedding_dims, trainable=True, input_length=self.maxlen)(input)
+        _input = Input((self.maxlen,))
+        embedding = Embedding(self.max_features, self.embedding_dims, trainable=True, input_length=self.maxlen)(_input)
 
         bn = keras.layers.BatchNormalization()(embedding)
 
@@ -157,6 +157,6 @@ class TextAttBiRNN(object):
 
         output = Dense(self.class_num, activation=self.last_activation)(d)
 
-        model = Model(inputs=input, outputs=output)
+        model = Model(inputs=_input, outputs=output)
 
         return model

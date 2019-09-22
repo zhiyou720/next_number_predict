@@ -43,11 +43,12 @@ class OriginData:
         self.data_diff_abs = []
         self.load_data()
         self.check_data()
+        self.diy_feature_num = 0
 
         self.diy_feature_set = []
 
         if diy_feature:
-            self.diy_feature()
+            self.diy_feature_num = self.diy_feature()
 
         print('初步预处理结束...')
 
@@ -86,14 +87,14 @@ class OriginData:
             raise ValueError
 
     def diy_feature(self):
-
-        diy_feature_num = len(self.raw_data[1]) - self.base_feature_num
+        diy_feature_num = len(self.raw_data[1].split(',')) - self.base_feature_num
         if diy_feature_num <= 0:
             print('打开diy feature开关的同时，请在源数据文件中增加新的一列')
             raise ValueError
 
         for raw in self.raw_data:
-            self.diy_feature_set.append(raw[self.base_feature_num:])
+            self.diy_feature_set.append(raw.split(',')[self.base_feature_num:])
+        return diy_feature_num
 
     def build_attention_map(self, time_point, data):
 
