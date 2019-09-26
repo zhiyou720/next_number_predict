@@ -20,6 +20,7 @@ config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.3  # 程序最多只能占用指定gpu50%的显存
 config.gpu_options.allow_growth = True  # 程序按需申请内存
 sess = tf.Session(config=config)
+tf.set_random_seed(1234)
 
 if __name__ == '__main__':
     print('Build model...')
